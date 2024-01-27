@@ -1,5 +1,11 @@
 # CookBook
 
+Документация (доступна после запуска проекта):
+
+http://127.0.0.1/swagger/
+
+http://127.0.0.1/redoc/
+
 Проект упакован в контейнеры Docker для локального запуска.
 
 Добавлены .csv файлы вместе со специальной management-командой для заполнения БД.
@@ -55,4 +61,46 @@ DB_PORT=5432
 
 ```docker-compose exec backend python manage.py import_csv```
 
+### Основной функционал:
+
+`http://127.0.0.1/api/add_product_to_recipe/`  
+
+GET - Добавление к указанному рецепту указанный продукт с указанным весом. Параметры: recipe_id, product_id, weight.
+
+Пример запроса:
+
+`http://127.0.0.1/api/add_product_to_recipe/?recipe_id=1&product_id=61&weight=14`
+
+---
+
+`http://127.0.0.1:8000/api/cook_recipe/`
+
+GET - Увеличивает на единицу количество приготовленных блюд для каждого продукта, входящего в указанный рецепт. Параметры: recipe_id.
+
+Пример запроса:
+
+`http://127.0.0.1:8000/api/cook_recipe/?recipe_id=5`
+
+---
+
+`http://127.0.0.1/api/show_recipes_without_product/`
+
+GET - Вывод html страницы с id и названиями всех рецептов, в которых указанный продукт отсутствует, или присутствует в количестве меньше 10 грамм. Параметры: product_id
+
+Пример запроса:
+
+`http://127.0.0.1/api/show_recipes_without_product/?product_id=4`
+
+---
+
 Документация API:
+
+http://127.0.0.1/swagger/
+
+http://127.0.0.1/redoc/
+
+### Автор проекта
+
+Егор Лоскутов
+
+https://github.com/Faithdev21
