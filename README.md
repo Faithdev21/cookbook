@@ -71,6 +71,8 @@ GET - Добавление к указанному рецепту указанн
 
 `http://127.0.0.1/api/add_product_to_recipe/?recipe_id=1&product_id=61&weight=14`
 
+Ответ: { "status": "Продукт добавлен} или {"status": "Вес продукта обновлен"} если продукт уже находился в рецепте.
+
 ---
 
 `http://127.0.0.1:8000/api/cook_recipe/`
@@ -81,6 +83,8 @@ GET - Увеличивает на единицу количество приго
 
 `http://127.0.0.1:8000/api/cook_recipe/?recipe_id=5`
 
+Ответ: {"status": "success"}
+
 ---
 
 `http://127.0.0.1/api/show_recipes_without_product/`
@@ -89,7 +93,13 @@ GET - Вывод html страницы с id и названиями всех р
 
 Пример запроса:
 
-`http://127.0.0.1/api/show_recipes_without_product/?product_id=4`
+`http://127.0.0.1/api/show_recipes_without_product/?product_id=78`
+
+Ответ:  
+![image](https://github.com/Faithdev21/cookbook-project/assets/119350657/53cd13e0-136b-48ee-9298-6edcdc4f0ae9)  
+Не вывелся еще один рецепт в который входил ингредиент с product_id=78  
+Полный список рецептов:  
+![image](https://github.com/Faithdev21/cookbook-project/assets/119350657/ab9b24ca-a36c-48e9-a027-bfee986d9cf9)
 
 ---
 
