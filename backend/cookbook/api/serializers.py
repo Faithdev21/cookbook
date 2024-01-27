@@ -64,7 +64,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             weight = ingredient_data.get('weight')
 
             if weight is None:
-                raise serializers.ValidationError("Weight field is required.")
+                raise serializers.ValidationError(
+                    "Weight field is required."
+                )
+            if weight < 1:
+                raise serializers.ValidationError(
+                    "Weight field must be more then 0."
+                )
 
         return data
 

@@ -12,8 +12,8 @@ class RecipeIngredientInline(admin.TabularInline):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display: Tuple = ('name', 'amount',)
-    search_fields: Tuple = ('name', 'amount',)
+    list_display: Tuple = ('id', 'name', 'amount',)
+    search_fields: Tuple = ('id', 'name', 'amount',)
 
 
 @admin.register(Recipe)

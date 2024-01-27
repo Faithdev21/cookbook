@@ -1,7 +1,7 @@
 from typing import Tuple, Type
 
 from django.db import transaction
-from django.db.models import Q, Sum
+from django.db.models import OuterRef, Subquery
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -28,7 +28,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeReadSerializer
     http_method_names: Tuple[str, ...] = ('get', 'post', 'patch', 'delete',)
-    ordering_fields: Tuple[str, ...] = ('name',)
+    ordering_fields: Tuple[str, ...] = ('id', 'name',)
 
     def get_serializer_class(self) -> Type:
         if self.action in constants.ACTION_METHODS:
@@ -45,6 +45,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
             ingredient = Ingredient.objects.get(pk=product_id)
+
+            serializer = RecipeCreateSerializer(
+                data={
+                    'recipe': recipe_id,
+                    'ingredient': product_id,
+                    'weight': weight}
+            )
+            if serializer.is_valid():
+                weight = serializer.validated_data['weight']
 
             recipe_ingredient, created = RecipeIngredient.objects.get_or_create(
                 recipe=recipe,
@@ -94,12 +103,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     @action(detail=False, methods=['GET'])
     def show_recipes_without_product(self, request):
-        product_id = request.GET.get('product_id')
+        product_id = request.GET.getlist('product_id')
 
-        recipes_without_product = Recipe.objects.filter(
-            ~Q(recipe_ingredients__ingredient_id=product_id)
-            | Q(recipe_ingredients__weight__lt=10)
-        ).annotate(total_weight=Sum('recipe_ingredients__weight'))
+        recipes_without_product = Recipe.objects.exclude(
+            id__in=Subquery(
+                RecipeIngredient.objects.filter(
+                    ingredient__id__in=product_id,
+                    weight__gte=10,
+                    recipe=OuterRef('pk')
+                ).values('recipe')
+            )
+        )
 
         return render(
             request, 'recipes_without_product.html',

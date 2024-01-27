@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from recipes.validators import validate_number
@@ -46,7 +47,7 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('name',)
+        ordering = ('-pk',)
 
     def __str__(self):
         return self.name
@@ -69,13 +70,13 @@ class RecipeIngredient(models.Model):
     weight = models.PositiveSmallIntegerField(
         verbose_name='Вес',
         null=False,
-        validators=[validate_number],
+        validators=[validate_number, MinValueValidator(limit_value=1)],
     )
 
     class Meta:
         verbose_name = 'вес ингредиента в грамма'
         verbose_name_plural = 'вес ингредиентов в граммах'
-        ordering = ('recipe__name',)
+        ordering = ('-recipe__pk',)
         constraints = [
             models.UniqueConstraint(
                 fields=['recipe', 'ingredient'],
