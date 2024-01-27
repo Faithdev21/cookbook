@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'rest_framework',
     'djoser',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

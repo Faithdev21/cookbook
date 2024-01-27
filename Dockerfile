@@ -10,16 +10,16 @@ RUN apt-get update \
     && poetry config virtualenvs.create false \
     && poetry install
 
-COPY backend/test_project .
+COPY backend/cookbook .
 
-ENV DJANGO_SETTINGS_MODULE=test_project.settings
+ENV DJANGO_SETTINGS_MODULE=cookbook.settings
 
 RUN python manage.py collectstatic \
     && cp -r /app/collected_static/. /static/
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8000", "test_project.wsgi:application"]
+CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8000", "cookbook.wsgi:application"]
 
 
 

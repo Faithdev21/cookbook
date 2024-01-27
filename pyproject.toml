@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "cookbook-project"
+version = "0.1.0"
+description = ""
+authors = ["Egor Loskutov <egorkaloskutov@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+django = "3.2"
+djangorestframework = "3.14.0"
+djoser = "^2.2.2"
+python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^21.2.0"
+drf-yasg = "^1.21.7"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+black = "^23.12.1"
+isort = "^5.13.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
