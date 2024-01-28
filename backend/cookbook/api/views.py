@@ -86,21 +86,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-    @transaction.atomic
     @action(detail=False, methods=['GET'])
     def cook_recipe(self, request):
         recipe_id = request.GET.get('recipe_id')
-        recipe = Recipe.objects.get(pk=recipe_id)
-        recipe_ingredients = RecipeIngredient.objects.select_for_update().filter(recipe=recipe)
-
-        updates = [
-            Ingredient(
-                id=recipe_ingredient.ingredient.id,
-                amount=F('amount') + 1
-            )
-            for recipe_ingredient in recipe_ingredients
-        ]
-        Ingredient.objects.bulk_update(updates, ['amount'])
+        Ingredient.objects.filter(
+            recipes__pk=recipe_id
+        ).update(amount=F('amount') + 1)
 
         return Response({'status': 'success'})
 
