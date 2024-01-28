@@ -5,7 +5,6 @@ from django.db.models import OuterRef, Subquery, F
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from api import constants
@@ -91,11 +90,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def cook_recipe(self, request):
         recipe_id = request.GET.get('recipe_id')
-        recipe = Recipe.objects.select_for_update().get(pk=recipe_id)
-        recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        recipe = Recipe.objects.get(pk=recipe_id)
+        recipe_ingredients = RecipeIngredient.objects.select_for_update().filter(recipe=recipe)
 
         updates = [
-            Ingredient(id=recipe_ingredient.ingredient.id, amount=F('amount') + 1)
+            Ingredient(
+                id=recipe_ingredient.ingredient.id,
+                amount=F('amount') + 1
+            )
             for recipe_ingredient in recipe_ingredients
         ]
         Ingredient.objects.bulk_update(updates, ['amount'])
